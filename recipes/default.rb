@@ -17,6 +17,7 @@ include_recipe "apache2::mod_php5"
 package "php-apc"
 package "php5-mysql"
 package "php5-curl"
+package "php5-mcrypt"
 
 # install mysql
 include_recipe "mysql::client"
