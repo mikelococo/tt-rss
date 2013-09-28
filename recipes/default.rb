@@ -14,17 +14,9 @@ include_recipe "apache2"
 include_recipe "php"
 include_recipe "apache2::mod_php5"
 
-package "php-apc" do
-  action :install
-end
-
-package "php5-mysql" do
-  action :install
-end
-
-package "php5-curl" do
-  action :install
-end
+package "php-apc"
+package "php5-mysql"
+package "php5-curl"
 
 # install mysql
 include_recipe "mysql::client"
