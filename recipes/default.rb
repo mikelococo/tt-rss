@@ -14,17 +14,10 @@ include_recipe "apache2"
 include_recipe "php"
 include_recipe "apache2::mod_php5"
 
-package "php-apc" do
-  action :install
-end
-
-package "php5-mysql" do
-  action :install
-end
-
-package "php5-curl" do
-  action :install
-end
+package "php-apc"
+package "php5-mysql"
+package "php5-curl"
+package "php5-mcrypt"
 
 # install mysql
 include_recipe "mysql::client"
@@ -38,9 +31,20 @@ database_name      = node['tt-rss']['database']['name']
 database_user      = node['tt-rss']['database']['user']
 database_passsword = node['tt-rss']['database']['password']
 
-mysql_database database_name do
-  connection ({:host => "localhost", :username => 'root', :password => node['mysql']['server_root_password']})
-  action :create
+# Does the tt-rss database already exist? We need to know prior to creating
+# it in order to decide whether to run schema creation later, since schema
+# creation destroys existing data.
+# Initialize to false so chefspec runs (which don't execute block) succeed.
+node.run_state['tt_rss_db_exists'] = false
+ruby_block "does tt-rss db exist" do
+  block do
+    # Make sure mysql gem is detected if it was just installed earlier in this recipe
+    require 'rubygems'
+    Gem.clear_paths
+    require 'mysql'
+    m = Mysql.new("localhost", "root", node['mysql']['server_root_password'])
+    node.run_state['tt_rss_db_exists'] = m.list_dbs.include?(database_name)
+  end
 end
 
 mysql_database database_name do
@@ -51,6 +55,8 @@ end
 mysql_database_user database_user do
   connection ({:host => "localhost", :username => 'root', :password => node['mysql']['server_root_password']})
   password database_passsword
+  database_name database_name
+  host 'localhost'
   action [:create, :grant]
 end
 
@@ -98,9 +104,10 @@ template "config.php" do
   action :create
 end
 
-# setup database scheme
+# setup database schema
 mysql_database database_name do
   connection ({:host => "localhost", :username => 'root', :password => node['mysql']['server_root_password']})
   sql { ::File.open("#{install_dir}/schema/ttrss_schema_mysql.sql").read }
   action :query
+  not_if { node.run_state['tt_rss_db_exists'] }
 end

@@ -1,3 +1,4 @@
+name             "tt-rss"
 maintainer       "Walter Treur"
 maintainer_email "wtreur@gmail.com"
 description      "Installs/Configures tt-rss"
