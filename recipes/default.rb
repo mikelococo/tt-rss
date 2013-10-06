@@ -88,9 +88,19 @@ template "config.php" do
   action :create
 end
 
-# setup database scheme
+# setup database schema
+# Note that this drops existing tables, so it's protected with a not_if that checks
+# for an existing db in order to prevent unexpected data loss
 mysql_database database_name do
   connection ({:host => "localhost", :username => 'root', :password => node['mysql']['server_root_password']})
   sql { ::File.open("#{install_dir}/schema/ttrss_schema_mysql.sql").read }
   action :query
+  not_if do
+    # Make sure mysql gem is detected if it was just installed earlier in this recipe
+    require 'rubygems'
+    Gem.clear_paths
+    require 'mysql'
+    m = Mysql.new("localhost", "root", node['mysql']['server_root_password'])
+    m.list_dbs.include?(database_name)
+  end
 end
