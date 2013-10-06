@@ -44,6 +44,8 @@ end
 mysql_database_user database_user do
   connection ({:host => "localhost", :username => 'root', :password => node['mysql']['server_root_password']})
   password database_passsword
+  database_name node['tt-rss']['database']['name']
+  host 'localhost'
   action [:create, :grant]
 end
 
