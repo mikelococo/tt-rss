@@ -6,7 +6,6 @@
 default['tt-rss']['database']['user']     = 'tt-rss'
 default['tt-rss']['database']['password'] = 'tt-rss'
 default['tt-rss']['database']['name']     = 'tt-rss'
-default['tt-rss']['database']['host']     = 'localhost'
 
 default['tt-rss']['download-url'] = 'https://github.com/gothfox/Tiny-Tiny-RSS/archive/1.10.tar.gz'
 
