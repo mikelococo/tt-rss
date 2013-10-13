@@ -18,6 +18,7 @@ package "php-apc"
 package "php5-mysql"
 package "php5-curl"
 package "php5-mcrypt"
+package "php5-cli"
 
 # install mysql
 include_recipe "mysql::client"
@@ -110,4 +111,15 @@ mysql_database database_name do
   sql { ::File.open("#{install_dir}/schema/ttrss_schema_mysql.sql").read }
   action :query
   not_if { node.run_state['tt_rss_db_exists'] }
+end
+
+# setup feed updates
+file '/etc/cron.d/ttrss-update' do
+  # The trailing \n (newline) is required for cron to parse the file correctly
+  content "#{node['tt-rss']['update_feeds']['cron_expression']} www-data /usr/bin/php #{install_dir}/update.php --feeds 2>&1 | logger -t ttrss-update\n"
+  owner 'www-data'
+  group 'www-data'
+  mode "0755"
+  action :create
+  only_if { node['tt-rss']['update_feeds']['cron'] }
 end

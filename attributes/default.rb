@@ -15,3 +15,6 @@ default['tt-rss']['url']         = "http://my-tinyrss.com"
 default['tt-rss']['install_dir'] = "/opt/tt-rss"
 
 default['tt-rss']['log_destination'] = 'sql'
+
+default['tt-rss']['update_feeds']['cron'] = true
+default['tt-rss']['update_feeds']['cron_expression'] = '17 */4 * * *'
