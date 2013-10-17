@@ -117,9 +117,9 @@ end
 file '/etc/cron.d/ttrss-update' do
   # The trailing \n (newline) is required for cron to parse the file correctly
   content "#{node['tt-rss']['update_feeds']['cron_expression']} www-data /usr/bin/php #{install_dir}/update.php --feeds 2>&1 | logger -t ttrss-update\n"
-  owner 'www-data'
-  group 'www-data'
-  mode "0755"
+  owner 'root'
+  group 'root'
+  mode "0644"
   action :create
   only_if { node['tt-rss']['update_feeds']['cron'] }
 end
