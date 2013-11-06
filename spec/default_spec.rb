@@ -32,6 +32,9 @@ describe 'tt-rss' do
   end
   it 'creates the tt-rss config.php' do
     expect(chef_run).to create_file "#{chef_run.node['tt-rss']['install_dir']}/config.php"
-    #expect(chef_run).to create_file_with_content "#{chef_run.node['tt-rss']['install_dir']}/config.php" 'define'
+    #expect(chef_run).to create_file_with_content "#{chef_run.node['tt-rss']['install_dir']}/config.php", 'define'
+  end
+  it 'creates the update_feeds cronjob' do
+    expect(chef_run).to create_file_with_content '/etc/cron.d/ttrss-update', '/usr/bin/php'
   end
 end
