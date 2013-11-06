@@ -28,6 +28,10 @@ Attributes
 * `node['tt-rss']['url']` - URL of the web site. Default `http://my-tinyrss.com/`
 * `node['tt-rss']['server_name']` - Name of the server, used in apache site configuration. Default `my-tinyrss.com`
 * `node['tt-rss']['install_dir']` - Installation directory. Default `/opt/tt-rss`
+* `node['tt-rss']['log_destination']` - Tiny Tiny RSS log destination configuration. Valid values are `sql` to log in the database (can be read using Preferences -> System), `syslog` to log to the system log, or blank string which uses PHP logging. Default `sql`
+* `node['tt-rss']['install_dir']` - Installation directory. Default `/opt/tt-rss`
+* `node['tt-rss']['update_feeds']['cron']` - If true, the cookbook installs a cron job to update feeds in /etc/cron.d/ttrss-update. Default `true`
+* `node['tt-rss']['install_dir']['cron_expression']` - The cron expression that determines how frequently to update feeds.  Default `17 */4 * * * (every 4 hours at 17min after the hour)`
 
 Usage
 =====

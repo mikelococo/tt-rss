@@ -13,6 +13,9 @@ default['tt-rss']['server_name'] = "my-tinyrss.com"
 default['tt-rss']['url']         = "http://my-tinyrss.com"
 default['tt-rss']['install_dir'] = "/opt/tt-rss"
 
+# sql for in-app (view with Preferences -> system,
+# syslog to log to the system logs,
+# empty string for php logging (which is usually to error.log)
 default['tt-rss']['log_destination'] = 'sql'
 
 default['tt-rss']['update_feeds']['cron'] = true
