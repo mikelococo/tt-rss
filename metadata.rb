@@ -1,6 +1,6 @@
 name             "tt-rss"
-maintainer       "Walter Treur"
-maintainer_email "wtreur@gmail.com"
+maintainer       "Mike Lococo"
+maintainer_email "mikelococo@gmail.com"
 description      "Installs/Configures tt-rss"
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
 version          "0.1.1"
