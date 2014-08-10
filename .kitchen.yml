@@ -24,4 +24,10 @@ suites:
   - name: default
     run_list:
       - recipe[tt-rss::default]
-
+    attributes: {
+      "mysql": {
+        "server_root_password": "aV8od8ah",
+        "server_repl_password": "aV8od8ah",
+        "server_debian_password": "aV8od8ah"
+        }
+      }

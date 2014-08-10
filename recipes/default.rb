@@ -26,6 +26,7 @@ include_recipe 'mysql::server'
 
 # create database
 include_recipe 'database'
+package 'build-essential' # needed to build mysql native-extensions
 gem_package 'mysql'
 
 database_name      = node['tt-rss']['database']['name']
