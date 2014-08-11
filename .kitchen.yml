@@ -19,6 +19,14 @@ platforms:
     driver_config:
       box: fgrehm/precise64-lxc
       box_url: https://vagrantcloud.com/fgrehm/precise64-lxc
+  - name: ubuntu-1404
+    driver_config:
+      box: fgrehm/trusty64-lxc
+      box_url: https://vagrantcloud.com/fgrehm/trusty64-lxc
+  - name: debian-7
+    driver_config:
+      box: fgrehm/wheezy64-lxc
+      box_url: https://vagrantcloud.com/fgrehm/wheezy64-lxc
 
 suites:
   - name: default
