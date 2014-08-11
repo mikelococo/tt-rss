@@ -24,6 +24,7 @@ suites:
   - name: default
     run_list:
       - recipe[tt-rss::default]
+      - recipe[tt-rss::apache-site]
     attributes: {
       "mysql": {
         "server_root_password": "aV8od8ah",
