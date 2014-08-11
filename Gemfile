@@ -5,7 +5,9 @@ source 'https://rubygems.org'
 gem 'rake'
 gem 'chef'
 gem 'knife-solo'
-gem 'berkshelf'
+# Without a version specification, bundler defaults to an old 2.x version of berkshelf.
+# Bundler... you had one job: https://github.com/bundler/bundler/issues/3089
+gem 'berkshelf', '>= 3.1.5'
 
 # Linting and style tests
 gem 'rubocop'
