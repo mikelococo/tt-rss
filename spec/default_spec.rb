@@ -11,9 +11,9 @@ describe 'tt-rss' do
     # When running under chef-solo (or chefspec), the mysql cookbook checks
     # for these attributes and raising a Chef::Application.fatal if they're
     # missing.
-    runner.node.set['mysql']['server_root_password']   = 'test_pw'
-    runner.node.set['mysql']['server_repl_password']   = 'test_pw'
-    runner.node.set['mysql']['server_debian_password'] = 'test_pw'
+    runner.node.set['mysql']['server_root_password']   = 'aV8od8ah'
+    runner.node.set['mysql']['server_repl_password']   = 'aV8od8ah'
+    runner.node.set['mysql']['server_debian_password'] = 'aV8od8ah'
     runner.converge 'tt-rss::default'
   end
   it 'installs php-apc' do
