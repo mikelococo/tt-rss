@@ -16,6 +16,8 @@ describe 'tt-rss' do
     runner.node.set['mysql']['server_debian_password'] = 'aV8od8ah'
     runner.converge 'tt-rss::default'
   end
+  before { stub_command('/usr/sbin/apache2 -t').and_return(true) }
+
   it 'installs php-apc' do
     expect(chef_run).to install_package 'php-apc'
   end
