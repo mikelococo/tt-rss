@@ -1,0 +1,42 @@
+---
+driver_plugin: vagrant
+driver_config:
+  provider: lxc
+  # Install the most recent version of chef one-time.
+  # require_chef_omnibus: latest reinstalls on each converge.
+  require_chef_omnibus: true
+  # Use polipo for caching...
+  http_proxy: http://10.0.3.1:8123
+  https_proxy: https://10.0.3.1:8123
+
+provisioner:
+  name: chef_solo
+  # Using http instead of the default https allows polipo proxy
+  chef_omnibus_url: http://www.getchef.com/chef/install.sh
+
+platforms:
+  - name: ubuntu-1204
+    driver_config:
+      box: fgrehm/precise64-lxc
+      box_url: https://vagrantcloud.com/fgrehm/precise64-lxc
+  - name: ubuntu-1404
+    driver_config:
+      box: fgrehm/trusty64-lxc
+      box_url: https://vagrantcloud.com/fgrehm/trusty64-lxc
+  - name: debian-7
+    driver_config:
+      box: fgrehm/wheezy64-lxc
+      box_url: https://vagrantcloud.com/fgrehm/wheezy64-lxc
+
+suites:
+  - name: default
+    run_list:
+      - recipe[tt-rss::default]
+      - recipe[tt-rss::apache-site]
+    attributes: {
+      "mysql": {
+        "server_root_password": "aV8od8ah",
+        "server_repl_password": "aV8od8ah",
+        "server_debian_password": "aV8od8ah"
+        }
+      }

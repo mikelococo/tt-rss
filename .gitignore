@@ -1,0 +1,22 @@
+# Kitchen and Vagrant local state
+.vagrant
+.kitchen/
+.kitchen.local.yml
+
+# Editor junk
+*~
+*#
+.#*
+\#*#
+
+# Berkshelf
+Berksfile.lock
+/vendor
+
+# Bundler
+Gemfile.lock
+bin/*
+.bundle/*
+
+# Don't push rvm configs to a public git repo
+.ruby*

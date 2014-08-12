@@ -7,8 +7,15 @@
   <Directory <%= @params[:docroot] %>>
     Options <%= [@params[:directory_options] || "FollowSymLinks" ].flatten.join " " %>
     AllowOverride <%= [@params[:allow_override] || "None" ].flatten.join " " %>
-    Order allow,deny
-    Allow from all
+    <% # Access control syntax changes in 2.4
+       # http://httpd.apache.org/docs/2.4/upgrading.html#run-time
+    %>
+    <% if node[:apache][:version].to_f >= 2.4 %>
+      Require all granted
+    <% else %>
+      Order allow,deny
+      Allow from all
+    <% end %>
   </Directory>
 
   <Directory />
@@ -33,8 +40,14 @@
   <% end -%>
 
   RewriteEngine On
-  RewriteLog <%= node['apache']['log_dir'] %>/<%= @application_name %>-rewrite.log
-  RewriteLogLevel 0
+  <% # RewriteLog and RewriteLogLevel directives go away in Apache 2.4
+     # http://httpd.apache.org/docs/2.4/upgrading.html#misc
+  %>
+  <% if node[:apache][:version].to_f < 2.4 %>
+    RewriteLog <%= node['apache']['log_dir'] %>/<%= @application_name %>-rewrite.log
+    RewriteLogLevel 0
+  <% end %>
+
 
   # Canonical host, <%= @params[:server_name] %>
   RewriteCond %{HTTP_HOST}   !^<%= @params[:server_name] %> [NC]

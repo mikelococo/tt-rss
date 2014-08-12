@@ -5,28 +5,29 @@
 #
 
 # update apt
-include_recipe "apt"
+include_recipe 'apt'
 
 # install apache2
-include_recipe "apache2"
+include_recipe 'apache2'
 
 # install php
-include_recipe "php"
-include_recipe "apache2::mod_php5"
+include_recipe 'php'
+include_recipe 'apache2::mod_php5'
 
-package "php-apc"
-package "php5-mysql"
-package "php5-curl"
-package "php5-mcrypt"
-package "php5-cli"
+package 'php-apc'
+package 'php5-mysql'
+package 'php5-curl'
+package 'php5-mcrypt'
+package 'php5-cli'
 
 # install mysql
-include_recipe "mysql::client"
-include_recipe "mysql::server"
+include_recipe 'mysql::client'
+include_recipe 'mysql::server'
 
 # create database
-include_recipe "database"
-gem_package "mysql"
+include_recipe 'database'
+package 'build-essential' # needed to build mysql native-extensions
+gem_package 'mysql'
 
 database_name      = node['tt-rss']['database']['name']
 database_user      = node['tt-rss']['database']['user']
@@ -37,24 +38,28 @@ database_passsword = node['tt-rss']['database']['password']
 # creation destroys existing data.
 # Initialize to false so chefspec runs (which don't execute block) succeed.
 node.run_state['tt_rss_db_exists'] = false
-ruby_block "does tt-rss db exist" do
+ruby_block 'does tt-rss db exist' do
   block do
-    # Make sure mysql gem is detected if it was just installed earlier in this recipe
+    # Load mysql gem in case it was just installed earlier in this recipe
     require 'rubygems'
     Gem.clear_paths
     require 'mysql'
-    m = Mysql.new("localhost", "root", node['mysql']['server_root_password'])
+    m = Mysql.new('localhost', 'root', node['mysql']['server_root_password'])
     node.run_state['tt_rss_db_exists'] = m.list_dbs.include?(database_name)
   end
 end
 
 mysql_database database_name do
-  connection ({:host => "localhost", :username => 'root', :password => node['mysql']['server_root_password']})
+  connection(host: 'localhost',
+             username: 'root',
+             password: node['mysql']['server_root_password'])
   action :create
 end
 
 mysql_database_user database_user do
-  connection ({:host => "localhost", :username => 'root', :password => node['mysql']['server_root_password']})
+  connection(host: 'localhost',
+             username: 'root',
+             password: node['mysql']['server_root_password'])
   password database_passsword
   database_name database_name
   host 'localhost'
@@ -77,24 +82,22 @@ remote_file "#{install_dir}/tt-rss.tar.gz" do
 end
 
 # unpack tt-rss
-execute "unpack" do
+execute 'unpack' do
   command "tar -zxf #{install_dir}/tt-rss.tar.gz --strip=1"
   cwd install_dir
 end
 
-execute "set permissions" do
+execute 'set permissions' do
   command "chown -R #{node['apache']['user']}.#{node['apache']['group']} *"
   cwd install_dir
 end
 
 # setup config file
-template "config.php" do
-  variables(
-      :db_user => database_user,
-      :db_name => database_name,
-      :db_password => database_passsword,
-      :url => node['tt-rss']['url']
-  )
+template 'config.php' do
+  variables(db_user: database_user,
+            db_name: database_name,
+            db_password: database_passsword,
+            url: node['tt-rss']['url'])
 
   owner node['apache']['user']
   group node['apache']['group']
@@ -107,7 +110,9 @@ end
 
 # setup database schema
 mysql_database database_name do
-  connection ({:host => "localhost", :username => 'root', :password => node['mysql']['server_root_password']})
+  connection(host: 'localhost',
+             username: 'root',
+             password: node['mysql']['server_root_password'])
   sql { ::File.open("#{install_dir}/schema/ttrss_schema_mysql.sql").read }
   action :query
   not_if { node.run_state['tt_rss_db_exists'] }
@@ -116,10 +121,10 @@ end
 # setup feed updates
 file '/etc/cron.d/ttrss-update' do
   # The trailing \n (newline) is required for cron to parse the file correctly
-  content "#{node['tt-rss']['update_feeds']['cron_expression']} www-data /usr/bin/php #{install_dir}/update.php --feeds 2>&1 | logger -t ttrss-update\n"
+  content "#{node['tt-rss']['update_feeds']['cron_expression']} www-data /usr/bin/php #{install_dir}/update.php --feeds 2>&1 | logger -t ttrss-update\n" # rubocop:disable Style/LineLength
   owner 'root'
   group 'root'
-  mode "0644"
+  mode '0644'
   action :create
   only_if { node['tt-rss']['update_feeds']['cron'] }
 end
