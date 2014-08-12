@@ -41,9 +41,9 @@ end
 
 describe 'tt-rss homepage' do
   let(:response) do
-    req = Net::HTTP::Get.new('http://127.0.0.1/')
-    req.add_field('Host', 'my-tinyrss.com')
-    connection = Net::HTTP.new('127.0.0.1', 80).start
+    req = Net::HTTP::Get.new('http://localhost/')
+    # req.add_field('Host', 'my-tinyrss.com')
+    connection = Net::HTTP.new('localhost', 80).start
     connection.request(req)
   end
   it { expect(response.code).to eq('200') }
